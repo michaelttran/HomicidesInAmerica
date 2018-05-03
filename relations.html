@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> 
+
+  .line { fill: none;
+          stroke: red;
+          stroke-width: 3px;
+        }
+
+</style>
+<body>
+	<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+
+// Set graph dimensions and margins
+var margin = {top: 50, right: 20, bottom: 110, left: 40},
+    width = 1200 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
+
+// Targets for filtering data
+var targetYear = "1980";
+var targetState = "Alaska";
+var targetWeapon = "Handgun";
+var monthLookup = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var timeLookup = [];
+var stateLookup = [];
+
+var weaponDict = [];
+
+// var weaponDict = [{Month : "January", Incidents : 0},
+//                   {Month : "February", Incidents : 0},
+//                   {Month : "March", Incidents : 0},
+//                   {Month : "April", Incidents : 0},
+//                   {Month : "May", Incidents : 0},
+//                   {Month : "June", Incidents : 0},
+//                   {Month : "July", Incidents : 0},
+//                   {Month : "August", Incidents : 0},
+//                   {Month : "September", Incidents : 0},
+//                   {Month : "October", Incidents : 0},
+//                   {Month : "November", Incidents : 0},
+//                   {Month : "December", Incidents : 0}];
+
+// Time parser
+var parseTime = d3.timeParse("%Y");
+
+var projection = d3.geoAlbersUsa()
+            .translate([width / 2, height / 2])
+            .scale([1400]);
+
+var colorScale = d3.scaleQuantize()
+                .range(['rgb(255,245,240)','rgb(254,224,210)','rgb(252,187,161)','rgb(252,146,114)','rgb(251,106,74)','rgb(239,59,44)','rgb(203,24,29)','rgb(165,15,21)','rgb(103,0,13)']);
+
+//Define path generator, using the Albers USA projection
+var path = d3.geoPath()
+       .projection(projection);
+          
+// Appends an svg to the body and a group which is moved to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+// Get data
+d3.csv("database.csv", function(error, data) {
+  if (error) throw error;
+
+  // Filters the data to a manageable chunk
+  // var newData = data.filter(function filterCriteria(d) {
+
+  //   stateLookup.forEach(function(dat) {
+  //     if (dat == d.State) {
+  //       return true;
+  //     }
+  //   });
+  //   return false;
+  // });
+
+  // Formats data
+  data.forEach(function(d) {
+    if (!stateLookup.includes(d.State)) {
+      stateLookup.push(d.State);
+      weaponDict.push({State : d.State, Incidents : 0});
+    }
+    weaponDict[stateLookup.indexOf(d.State)].Incidents += 1;
+  });
+
+  weaponDict = weaponDict.filter(function filterCriteria(d) {
+    return d.Incidents < 30000;
+  });
+
+  colorScale.domain([d3.min(weaponDict, function(d) { return d.Incidents; }),
+              d3.max(weaponDict, function(d) { return d.Incidents; })]);
+
+  //Load in GeoJSON data
+    d3.json("us_states.json", function(json) {
+
+      for (var i = 0 ; i < weaponDict.length ; i++) {
+        //Grab state name
+        var dataState = weaponDict[i].State;
+
+        //Grab data value, and convert from string to float
+        var dataValue = weaponDict[i].Incidents;
+
+        for (var j = 0 ; j < json.features.length ; j++) {
+          var jsonState = json.features[j].properties.name;
+
+          if (dataState == jsonState) {
+            //Copy the datavalue into the JSON
+            json.features[j].properties.value = dataValue;
+          }
+        }
+      }
+      
+      //Bind data and create one path per GeoJSON feature
+      svg.selectAll("path")
+         .data(json.features)
+         .enter()
+         .append("path")
+         .attr("d", path)
+         .style("fill", function(d) {
+          //Get data value
+          var value = d.properties.value;
+
+          if (value) {
+            //If value exists
+            return colorScale(value);
+          } else {
+            //If value is undefined
+            return "#ccc";
+          }
+        });
+      svg.selectAll("text")
+        .data(json.features)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", function(d) {
+          return path.centroid(d)[0];
+        })
+        .attr("y", function(d) {
+          return path.centroid(d)[1];
+        })
+        .text(function(d) {
+          if (d.properties.value) {
+            return d.properties.value;
+          }
+        });
+
+      });
+
+  // Make a title
+  svg.append("text")
+      .attr("x", (width / 2))
+      .attr("y", 0 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .text("Map Depicting Homicides in the United States: 1980-2014");
+
+});
+
+</script>
+</body>

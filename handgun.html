@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> 
+
+  .line { fill: none;
+          stroke: red;
+          stroke-width: 3px;
+        }
+
+</style>
+<body>
+	<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+
+// Set graph dimensions and margins
+var margin = {top: 50, right: 20, bottom: 110, left: 40},
+    width = 1200 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+// Targets for filtering data
+var targetYear = "1980";
+var targetState = "California";
+var targetState2 = "Minnesota";
+var targetWeapon = "Handgun";
+var monthLookup = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var timeLookup = [];
+
+var weaponDict = [];
+var weaponDict2 = [];
+
+for (var i = 0 ; i < 35 ; i++) {
+  //for (var j = 0 ; j < 12 ; j++) {
+    weaponDict.push({Time : (1980 + i) + "", Incidents : 0});
+    weaponDict2.push({Time : (1980 + i) + "", Incidents : 0});
+    timeLookup.push((1980 + i) + "");
+  //}
+}
+
+// Time parser
+var parseTime = d3.timeParse("%Y");
+
+// Set ranges
+var x = d3.scaleTime()
+          .range([0, width])
+var y = d3.scaleLinear()
+          .range([height, 0]);
+
+// Define line
+var line = d3.line()
+    .x(function(d) {
+      return x(d.Time);
+    })
+    .y(function(d) {
+      return y(d.Incidents);
+    });
+          
+// Appends an svg to the body and a group which is moved to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+// Get data
+d3.csv("database.csv", function(error, data) {
+  if (error) throw error;
+
+  // Filters the data to a manageable chunk
+  var newData = data.filter(function filterCriteria(d) {
+    return (d.State == targetState);
+  });
+
+  var newData2 = data.filter(function(d) {
+    return (d.State == targetState2);
+  })
+
+  // Formats data
+  newData.forEach(function(d) {
+    weaponDict[timeLookup.indexOf(d.Year + "")].Incidents += 1;
+  });
+  newData2.forEach(function(d) {
+    weaponDict2[timeLookup.indexOf(d.Year + "")].Incidents +=1;
+  })
+  weaponDict.forEach(function(d) {
+    d.Time = parseTime(d.Time);
+  });
+  weaponDict2.forEach(function(d) {
+    d.Time = parseTime(d.Time);
+  })
+	
+  // Scale the range of the data in the domains
+  x.domain(d3.extent(weaponDict, function(d) {
+    return d.Time; 
+  }));
+  y.domain([0, d3.max(weaponDict, function(d) {
+    return d.Incidents; 
+  })]);
+
+  // Appends the path of the line
+  svg.append("path")
+    .data([weaponDict])
+    .attr("class", "line")
+    .attr("d", line);
+
+  svg.append("text")
+    .attr("x", x(weaponDict[weaponDict.length - 1].Time))
+    .attr("y", y(weaponDict[weaponDict.length - 1].Incidents) + 8)
+    .attr("text-anchor", "end")
+    .text(targetState);
+
+    // Appends the path of the line
+  svg.append("path")
+    .data([weaponDict2])
+    .attr("class", "line")
+    .attr("d", line);
+
+  svg.append("text")
+    .attr("x", x(weaponDict2[weaponDict.length - 1].Time))
+    .attr("y", y(weaponDict2[weaponDict.length - 1].Incidents) - 5)
+    .attr("text-anchor", "end")
+    .text(targetState2);
+
+  // X axis
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+  // Y Axis
+  svg.append("g")
+      .call(d3.axisLeft(y));
+
+  // Make a title
+  svg.append("text")
+      .attr("x", (width / 2))
+      .attr("y", 0 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .text("Number of Homicides by " + targetWeapon + " in " + targetState +  " and " + targetState2 + " Over Time");
+
+});
+
+</script>
+</body>
