@@ -7,25 +7,20 @@
   <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
 
-var searchState1 = "Minnesota";
-var searchState2 = "California";
-var searchState3 = "Florida";
-var numberOfStates = 3;
-var i;
+var init = 0;
+var seasonSum = {
+  spring: init,
+  summer: init,
+  fall: init,
+  winter: init
+};
 
-var state1Hom = 0;
-var state2Hom = 0;
-var state3Hom = 0; 
-
-//TODO: Make this more dynaic
-var searchList = [];
-
-searchList.push(searchState1);
-searchList.push(searchState2);
-searchList.push(searchState3);
-// searchList.sort();
-
-console.log(searchList);
+var seasonMonth = {
+  spring: ["March", "April", "May"],
+  summer: ["June", "July", "August"],
+  fall: ["September", "October", "November"],
+  winter: ["December", "January", "February"]
+};
 
 // Set graph dimensions and margins
 var margin = {top: 50, right: 20, bottom: 200, left: 100},
@@ -50,77 +45,62 @@ var svg = d3.select("body").append("svg")
 d3.csv("database.csv", function(error, data) {
   if (error) throw error;
 
-  var formData = data.filter(function filterCriteria(d) {
-    if(d.State == searchState1) {
-      state1Hom++;
+  // Counts homicides per season
+  data.forEach(function(d) {
+    for(var key in seasonMonth) {
+      if(seasonMonth[key].includes(d.Month)) {
+        seasonSum[key] += 1;
+      }
     }
-    if(d.State == searchState2) {
-      state2Hom++;
-    }
-    if(d.State == searchState3) {
-      state3Hom++;
-    }
-    return d.State == searchState1;
   })
 
-  // Format data
-  formData.forEach(function(d) {
-    d.City = d.City; // Cities where homicide took place
-    d.Year = +d.Year; // Year of homicide
-  });
+  var maxVal = seasonSum["spring"]; // Assigns to first value of array to make sure value exists
+  var tSeason = [];
 
-  searchList[searchState1] = state1Hom;
-  searchList[searchState2] = state2Hom;
-  searchList[searchState3] = state3Hom;
-
-
-  var maxVal = searchList[searchState1];
-  searchList.forEach(function(d) {
-    if(maxVal < searchList[d]) {
-      maxVal = searchList[d];
+  // Finds max value from sum of homicides of each season
+  for(season in seasonSum) {
+    tSeason.push(season);
+    if(maxVal < seasonSum[season]) {
+      maxVal = seasonSum[season];
     }
-  });
+  }
 
-  x.domain(searchList.map(function(d) { return d; }));
+  x.domain(tSeason.map(function(d) { return d; })); 
   y.domain([0, maxVal]);
 
   var tooltip = d3.select("body")
-    .data(searchList)
+    .data(tSeason)
     .append("div")
     .style("visibility", "hidden");
 
-
   // Append rectangles for the bar chart
   svg.selectAll(".bar")
-      .data(searchList)
+      .data(tSeason)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { 
-        // console.log(d);
+      .attr("x", function(d) { // Should return seasons
         return x(d); })
       .attr("width", x.bandwidth())
-      .attr("y", function(d) { 
-        console.log( searchList[d]);
-        return y(searchList[d]); })
+      .attr("y", function(d) {  // Should return values
+        
+        return y(seasonSum[d]); })
       .attr("height", function(d) { 
-        console.log(searchList[d]);
-        return height - y(searchList[d]); })
-      .attr("fill", "steelblue")
+      
+        return height - y(seasonSum[d]); }) // This should be height - value
+      .attr("fill", "red")
       .on('mouseover', function(d) {
-        var numHom = searchList[d];
+        var numHom = seasonSum[d];
         d3.select(this)
-        .attr("fill", "grey");
-     
+        .attr("fill", "gray");
         tooltip.style("visibility", "visible")
                 .text(function(d) {
                       return numHom;
               });
       })
       .on('mouseout', function(d) {
-        d3.select(this).attr("fill", "steelblue");
+        d3.select(this).attr("fill", "red");
         return tooltip.style("visibility", "hidden");
       });
-
 
 
   // add the X Axis
@@ -143,7 +123,7 @@ d3.csv("database.csv", function(error, data) {
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "25px")
-      .text("Number of Homicides in each City");
+      .text("Number of Homicides per Season");
 
 
 });
