@@ -6,25 +6,19 @@
   <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
 
-var searchState1 = "Minnesota";
-var searchState2 = "California";
-var searchState3 = "Florida";
-var numberOfStates = 3;
-var i;
+// var gunHom = 0;
+// var otherHom = 0;
 
-var state1Hom = 0;
-var state2Hom = 0;
-var state3Hom = 0; 
+var totalHom = 0;
+var init = 0;
+var homicides = {
+  gunHom: init,
+  otherHom: init
+};
 
-//TODO: Make this more dynaic
-var searchList = [];
+console.log(homicides);
 
-searchList.push(searchState1);
-searchList.push(searchState2);
-searchList.push(searchState3);
-// searchList.sort();
-
-console.log(searchList);
+var gunTitles = ["Rifle", "Firearm", "Shotgun", "Handgun"];
 
 // Set graph dimensions and margins
 var margin = {top: 50, right: 20, bottom: 200, left: 100},
@@ -49,77 +43,67 @@ var svg = d3.select("body").append("svg")
 d3.csv("database.csv", function(error, data) {
   if (error) throw error;
 
-  var formData = data.filter(function filterCriteria(d) {
-    if(d.State == searchState1) {
-      state1Hom++;
+  
+  data.forEach(function(d) {
+    var weapon = d.Weapon;
+    totalHom++;
+    if(gunTitles.includes(weapon)) {
+      homicides["gunHom"]++;
+    } else {
+      homicides["otherHom"]++;
     }
-    if(d.State == searchState2) {
-      state2Hom++;
-    }
-    if(d.State == searchState3) {
-      state3Hom++;
-    }
-    return d.State == searchState1;
   })
 
-  // Format data
-  formData.forEach(function(d) {
-    d.City = d.City; // Cities where homicide took place
-    d.Year = +d.Year; // Year of homicide
-  });
+  var maxVal;
+  if(homicides["gunHom"] > homicides["otherHom"]) {
+    maxVal = homicides["gunHom"];
+  } else {
+    maxVal = homicides["otherHom"];
+  }
 
-  searchList[searchState1] = state1Hom;
-  searchList[searchState2] = state2Hom;
-  searchList[searchState3] = state3Hom;
+  var tHom = [];
 
+  for(hom in homicides) {
+    tHom.push(hom);
+  }
 
-  var maxVal = searchList[searchState1];
-  searchList.forEach(function(d) {
-    if(maxVal < searchList[d]) {
-      maxVal = searchList[d];
-    }
-  });
-
-  x.domain(searchList.map(function(d) { return d; }));
+  x.domain(tHom.map(function(d) { return d; })); 
   y.domain([0, maxVal]);
 
   var tooltip = d3.select("body")
-    .data(searchList)
-    .append("div")
-    .style("visibility", "hidden");
-
+  .data(tHom)
+  .append("div")
+  .style("visibility", "hidden");
 
   // Append rectangles for the bar chart
   svg.selectAll(".bar")
-      .data(searchList)
+      .data(tHom)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { 
+      .attr("x", function(d) { // Should return type of homicide
         // console.log(d);
         return x(d); })
       .attr("width", x.bandwidth())
-      .attr("y", function(d) { 
-        console.log( searchList[d]);
-        return y(searchList[d]); })
+      .attr("y", function(d) {  // Should return values
+        
+        return y(homicides[d]); })
       .attr("height", function(d) { 
-        console.log(searchList[d]);
-        return height - y(searchList[d]); })
-      .attr("fill", "steelblue")
+        // console.log(homicides[d]);
+        return height - y(homicides[d]); }) // This should be height - value
+      .attr("fill", "red")
       .on('mouseover', function(d) {
-        var numHom = searchList[d];
+        var numHom = homicides[d];
         d3.select(this)
-        .attr("fill", "grey");
-     
+        .attr("fill", "gray");
         tooltip.style("visibility", "visible")
                 .text(function(d) {
                       return numHom;
               });
       })
       .on('mouseout', function(d) {
-        d3.select(this).attr("fill", "steelblue");
+        d3.select(this).attr("fill", "red");
         return tooltip.style("visibility", "hidden");
       });
-
 
 
   // add the X Axis
@@ -142,8 +126,7 @@ d3.csv("database.csv", function(error, data) {
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "25px")
-      .text("Number of Homicides in each City");
-
+      .text("Gun Related Homicides Versus All Others");
 
 });
 
