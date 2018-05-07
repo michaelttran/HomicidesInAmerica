@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style> 
-.label {stroke: darkgrey;
-          fill : darkgrey;
-          text-anchor : middle;
-        }
       
 </style>
 <body>
@@ -61,12 +57,6 @@ d3.csv("parsed_data.csv", function(error, data) {
   	homicides1["otherHom"] += (
   		d.knife_incidents + 
   		d.other_weapon_incidents);
-    // if(gunTitles.includes(weapon)) {
-    // 	console.log("asdf");
-    //   homicides1["gunHom"]++;
-    // } else {
-    //   homicides1["otherHom"]++;
-    // }
   })
 
   var maxVal;
@@ -213,10 +203,11 @@ d3.csv("parsed_data.csv", function(error, data) {
     .append("div")
     .style("visibility", "hidden");
 
+    
   // Append rectangles for the bar chart
   chart1.selectAll(".bar")
       .data(tHom)
-    .enter().append("rect")
+    .enter().append("svg:rect")
       .attr("class", "bar")
       .attr("x", function(d) { // Should return seasons
         return x(d); })
@@ -231,11 +222,7 @@ d3.csv("parsed_data.csv", function(error, data) {
       .on('mouseover', function(d) {
         var numHom = homicides[d];
         d3.select(this)
-        .attr("fill", "gray");
-        tooltip.style("visibility", "visible")
-                .text(function(d) {
-                      return numHom;
-              });
+        .attr("fill", "gray")
       })
       .on('mouseout', function(d) {
         d3.select(this).attr("fill", "red");
@@ -386,7 +373,6 @@ d3.csv("parsed_data.csv", function(error, data) {
 });
 
 
-  
 	</script>
 
 </body>
