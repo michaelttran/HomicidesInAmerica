@@ -21,7 +21,7 @@ var y = d3.scaleLinear()
           .range([height, 0]);  
           
 // Appends an svg to the body and a group which is moved to the top left margin
-var svg = d3.select("body").append("svg")
+var chart1 = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -30,7 +30,6 @@ var svg = d3.select("body").append("svg")
 // Get data
 d3.csv("parsed_data.csv", function(error, data) {
   if (error) throw error;
-
 
   // Fills up diciontary
   data.forEach(function(d) {
