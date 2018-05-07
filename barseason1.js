@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style> 
-</style>
-<body>
-  <script src="//d3js.org/d3.v4.min.js"></script>
-<script>
-
 var init = 0;
 var seasonSum = {
   spring: init,
@@ -46,10 +38,9 @@ d3.csv("parsed_data.csv", function(error, data) {
 
   // Counts homicides per season
   data.forEach(function(d) {
-    d.total_incidents = +d.total_incidents;
     for(var key in seasonMonth) {
-      if(seasonMonth[key].includes(d.month)) {
-        seasonSum[key] += d.total_incidents;
+      if(seasonMonth[key].includes(d.Month)) {
+        seasonSum[key] += 1;
       }
     }
   })
@@ -129,6 +120,3 @@ d3.csv("parsed_data.csv", function(error, data) {
 
 
 });
-
-</script>
-</body>

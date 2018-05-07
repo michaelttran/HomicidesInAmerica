@@ -6,8 +6,7 @@
   <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
 
-// var gunHom = 0;
-// var otherHom = 0;
+// Data is seprate for guns and then the rest of the weapons are collapsed into one
 
 var totalHom = 0;
 var init = 0;
@@ -40,12 +39,12 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Get data
-d3.csv("database.csv", function(error, data) {
+d3.csv("parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   
   data.forEach(function(d) {
-    var weapon = d.Weapon;
+    var weapon = d.weapon;
     totalHom++;
     if(gunTitles.includes(weapon)) {
       homicides["gunHom"]++;

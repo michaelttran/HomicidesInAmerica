@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style> 
-</style>
-<body>
-  <script src="//d3js.org/d3.v4.min.js"></script>
-<script>
-
 var init = 0;
-var seasonSum = {
-  spring: init,
-  summer: init,
-  fall: init,
-  winter: init
-};
 
-var seasonMonth = {
-  spring: ["March", "April", "May"],
-  summer: ["June", "July", "August"],
-  fall: ["September", "October", "November"],
-  winter: ["December", "January", "February"]
+var homicides = {
+	handgun: init,
+	shotgun: init,
+	rifle: init,
+	firearm: init,
+	other: init
 };
 
 // Set graph dimensions and margins
@@ -44,40 +31,48 @@ var svg = d3.select("body").append("svg")
 d3.csv("parsed_data.csv", function(error, data) {
   if (error) throw error;
 
-  // Counts homicides per season
+
+  // Fills up diciontary
   data.forEach(function(d) {
-    d.total_incidents = +d.total_incidents;
-    for(var key in seasonMonth) {
-      if(seasonMonth[key].includes(d.month)) {
-        seasonSum[key] += d.total_incidents;
-      }
-    }
+  	d.handgun_incidents = +d.handgun_incidents;
+  	homicides["handgun"] += d.handgun_incidents;
+
+  	d.shotgun_incidents = +d.shotgun_incidents;
+  	homicides["shotgun"] += d.shotgun_incidents;
+
+  	d.rifle_incidents = +d.rifle_incidents;
+  	homicides["rifle"] += d.rifle_incidents;
+
+  	d.firearm_incidents = +d.firearm_incidents;
+  	homicides["firearm"] += d.firearm_incidents;
+
+  	d.knife_incidents = +d.knife_incidents;
+  	d.other_weapon_incidents = +d.other_weapon_incidents;
+
+  	homicides["other"] += (d.knife_incidents + d.other_weapon_incidents);
   })
 
-  var maxVal = seasonSum["spring"]; // Assigns to first value of array to make sure value exists
-  var tSeason = [];
+  var maxVal = homicides["handgun"]; // Assigns to first value of array to make sure value exists
 
-  // Finds max value from sum of homicides of each season
-  for(season in seasonSum) {
-    tSeason.push(season);
-    if(maxVal < seasonSum[season]) {
-      maxVal = seasonSum[season];
-    }
-  }
+  var tHom = [];
+	for(hom in homicides) {
+		tHom.push(hom);
+		if(homicides[hom] > maxVal) {
+			maxVal = homicides[hom];
+		}
+	}
 
-  x.domain(tSeason.map(function(d) { return d; })); 
-  y.domain([0, maxVal]);
-
-  console.log(tSeason);
+	x.domain(tHom.map(function(d) { return d; })); 
+	y.domain([0, maxVal]);
 
   var tooltip = d3.select("body")
-    .data(tSeason)
+    .data(tHom)
     .append("div")
     .style("visibility", "hidden");
 
   // Append rectangles for the bar chart
   svg.selectAll(".bar")
-      .data(tSeason)
+      .data(tHom)
     .enter().append("rect")
       .attr("class", "bar")
       .attr("x", function(d) { // Should return seasons
@@ -85,13 +80,13 @@ d3.csv("parsed_data.csv", function(error, data) {
       .attr("width", x.bandwidth())
       .attr("y", function(d) {  // Should return values
         
-        return y(seasonSum[d]); })
+        return y(homicides[d]); })
       .attr("height", function(d) { 
       
-        return height - y(seasonSum[d]); }) // This should be height - value
+        return height - y(homicides[d]); }) // This should be height - value
       .attr("fill", "red")
       .on('mouseover', function(d) {
-        var numHom = seasonSum[d];
+        var numHom = homicides[d];
         d3.select(this)
         .attr("fill", "gray");
         tooltip.style("visibility", "visible")
@@ -125,10 +120,11 @@ d3.csv("parsed_data.csv", function(error, data) {
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "25px")
-      .text("Number of Homicides per Season");
+      .text("Homicides In Gun Categories versus All Others");
 
 
 });
 
-</script>
-</body>
+
+
+  
