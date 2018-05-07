@@ -18,26 +18,12 @@ var margin = {top: 50, right: 20, bottom: 110, left: 40},
     height = 700 - margin.top - margin.bottom;
 
 // Targets for filtering data
-var targetYear = "1980";
 var targetState = "California";
 var targetState2 = "Minnesota";
-var targetWeapon = "Handgun";
-var monthLookup = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-var timeLookup = [];
-
-var weaponDict = [];
-var weaponDict2 = [];
-
-for (var i = 0 ; i < 35 ; i++) {
-  //for (var j = 0 ; j < 12 ; j++) {
-    weaponDict.push({Time : (1980 + i) + "", Incidents : 0});
-    weaponDict2.push({Time : (1980 + i) + "", Incidents : 0});
-    timeLookup.push((1980 + i) + "");
-  //}
-}
+var targetYear = "2014";
 
 // Time parser
-var parseTime = d3.timeParse("%Y");
+var parseTime = d3.timeParse("%B");
 
 // Set ranges
 var x = d3.scaleTime()
@@ -48,10 +34,10 @@ var y = d3.scaleLinear()
 // Define line
 var line = d3.line()
     .x(function(d) {
-      return x(d.Time);
+      return x(d.month);
     })
     .y(function(d) {
-      return y(d.Incidents);
+      return y(d.handgun_incidents);
     });
           
 // Appends an svg to the body and a group which is moved to the top left margin
@@ -64,61 +50,58 @@ var svg = d3.select("body").append("svg")
 
 
 // Get data
-d3.csv("database.csv", function(error, data) {
+d3.csv("parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   // Filters the data to a manageable chunk
   var newData = data.filter(function filterCriteria(d) {
-    return (d.State == targetState);
+    return (d.state == targetState) && (d.year == targetYear);
   });
 
   var newData2 = data.filter(function(d) {
-    return (d.State == targetState2);
+    return (d.state == targetState2) && (d.year == targetYear);
   })
 
   // Formats data
   newData.forEach(function(d) {
-    weaponDict[timeLookup.indexOf(d.Year + "")].Incidents += 1;
-  });
-  newData2.forEach(function(d) {
-    weaponDict2[timeLookup.indexOf(d.Year + "")].Incidents +=1;
+    d.month = parseTime(d.month);
+    d.handgun_incidents = +d.handgun_incidents;
   })
-  weaponDict.forEach(function(d) {
-    d.Time = parseTime(d.Time);
-  });
-  weaponDict2.forEach(function(d) {
-    d.Time = parseTime(d.Time);
+
+  newData2.forEach(function(d) {
+    d.month = parseTime(d.month);
+    d.handgun_incidents = +d.handgun_incidents;
   })
 	
   // Scale the range of the data in the domains
-  x.domain(d3.extent(weaponDict, function(d) {
-    return d.Time; 
+  x.domain(d3.extent(newData, function(d) {
+    return d.month; 
   }));
-  y.domain([0, d3.max(weaponDict, function(d) {
-    return d.Incidents; 
+  y.domain([0, d3.max(newData, function(d) {
+    return d.handgun_incidents; 
   })]);
 
   // Appends the path of the line
   svg.append("path")
-    .data([weaponDict])
+    .data([newData])
     .attr("class", "line")
     .attr("d", line);
 
   svg.append("text")
-    .attr("x", x(weaponDict[weaponDict.length - 1].Time))
-    .attr("y", y(weaponDict[weaponDict.length - 1].Incidents) + 8)
+    .attr("x", x(newData[newData.length - 1].month))
+    .attr("y", y(newData[newData.length - 1].handgun_incidents) + 8)
     .attr("text-anchor", "end")
     .text(targetState);
 
     // Appends the path of the line
   svg.append("path")
-    .data([weaponDict2])
+    .data([newData2])
     .attr("class", "line")
     .attr("d", line);
 
   svg.append("text")
-    .attr("x", x(weaponDict2[weaponDict.length - 1].Time))
-    .attr("y", y(weaponDict2[weaponDict.length - 1].Incidents) - 5)
+    .attr("x", x(newData2[newData2.length - 1].month))
+    .attr("y", y(newData2[newData2.length - 1].handgun_incidents) - 5)
     .attr("text-anchor", "end")
     .text(targetState2);
 
@@ -137,7 +120,7 @@ d3.csv("database.csv", function(error, data) {
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "20px")
-      .text("Number of Homicides by " + targetWeapon + " in " + targetState +  " and " + targetState2 + " Over Time");
+      .text("Number of Homicides by Handgun in " + targetState +  " and " + targetState2 + " Over Time");
 
 });
 
