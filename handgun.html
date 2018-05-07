@@ -20,10 +20,9 @@ var margin = {top: 50, right: 20, bottom: 110, left: 40},
 // Targets for filtering data
 var targetState = "California";
 var targetState2 = "Minnesota";
-var targetYear = "2014";
 
 // Time parser
-var parseTime = d3.timeParse("%B");
+var parseTime = d3.timeParse("%Y%B");
 
 // Set ranges
 var x = d3.scaleTime()
@@ -34,7 +33,7 @@ var y = d3.scaleLinear()
 // Define line
 var line = d3.line()
     .x(function(d) {
-      return x(d.month);
+      return x(d.time);
     })
     .y(function(d) {
       return y(d.handgun_incidents);
@@ -55,27 +54,27 @@ d3.csv("parsed_data.csv", function(error, data) {
 
   // Filters the data to a manageable chunk
   var newData = data.filter(function filterCriteria(d) {
-    return (d.state == targetState) && (d.year == targetYear);
+    return (d.state == targetState);
   });
 
   var newData2 = data.filter(function(d) {
-    return (d.state == targetState2) && (d.year == targetYear);
+    return (d.state == targetState2);
   })
 
   // Formats data
   newData.forEach(function(d) {
-    d.month = parseTime(d.month);
+    d.time = parseTime(d.year + d.month);
     d.handgun_incidents = +d.handgun_incidents;
   })
 
   newData2.forEach(function(d) {
-    d.month = parseTime(d.month);
+    d.time = parseTime(d.year + d.month);
     d.handgun_incidents = +d.handgun_incidents;
   })
 	
   // Scale the range of the data in the domains
   x.domain(d3.extent(newData, function(d) {
-    return d.month; 
+    return d.time; 
   }));
   y.domain([0, d3.max(newData, function(d) {
     return d.handgun_incidents; 
@@ -88,7 +87,7 @@ d3.csv("parsed_data.csv", function(error, data) {
     .attr("d", line);
 
   svg.append("text")
-    .attr("x", x(newData[newData.length - 1].month))
+    .attr("x", x(newData[newData.length - 1].time))
     .attr("y", y(newData[newData.length - 1].handgun_incidents) + 8)
     .attr("text-anchor", "end")
     .text(targetState);
@@ -100,7 +99,7 @@ d3.csv("parsed_data.csv", function(error, data) {
     .attr("d", line);
 
   svg.append("text")
-    .attr("x", x(newData2[newData2.length - 1].month))
+    .attr("x", x(newData2[newData2.length - 1].time))
     .attr("y", y(newData2[newData2.length - 1].handgun_incidents) - 5)
     .attr("text-anchor", "end")
     .text(targetState2);
