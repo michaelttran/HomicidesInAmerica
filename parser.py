@@ -1,5 +1,4 @@
 import csv
-from collections import defaultdict
 
 state_lookup = ['Alaska', 'Alabama', 'Arkansas', 'Arizona', 'California', 'Colorado', 'Connecticut', 'District of Columbia',
                 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Iowa', 'Idaho', 'Illinois', 'Indiana', 'Kansas', 'Kentucky',
@@ -67,11 +66,6 @@ with open("database.csv", newline = '') as csvfile:
         else:
             data[index]['other_weapon_incidents'] += 1
 
-# {'state': state_lookup[i], 'year': year_lookup[j], 'month': month_lookup[k],
-#             'total_incidents': 0, 'handgun_incidents' : 0, 'shotgun_incidents': 0, 'rifle_incidents': 0,
-#             'firearm_incidents': 0, 'knife_incidents':0, 'other_weapon_incidents': 0,
-#             'sibling_incidents': 0, 'spouse_incidents': 0, 'parent_incidents': 0, 'child_incidents': 0,
-            # 'dating_incidents': 0, 'other_relations_incidents': 0, 'accidental_incidents': 0, 'intentional_incidents': 0})
 with open('parsed_data.csv', 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
     row = ['state', 'year', 'month', 'handgun_incidents', 'shotgun_incidents', 'rifle_incidents', 'firearm_incidents',
