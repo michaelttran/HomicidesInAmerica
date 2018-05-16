@@ -1,4 +1,3 @@
-// var init = 1;
 var state1 = "California";
 var state2 = "Minnesota";
 var state3 = "Florida";
@@ -7,15 +6,13 @@ var state1Tot = 0;
 var state2Tot = 0;
 var state3Tot = 0;
 
-// TODO: Fix this hard coded issue. Values are correct and known from running through data but won't update
-
 tData = [
     {label:state1, value:790},
     {label:state2, value:102},
     {label:state3, value:1571},
 ];
 
-var fillData = d3.csv("parsed_data.csv", function(error, data) {
+var fillData = d3.csv("./data/parsed_data.csv", function(error, data) {
     if (error) throw error;
     data.forEach(function(d) {
         d.total_incidents = +d.total_incidents;
@@ -30,32 +27,8 @@ var fillData = d3.csv("parsed_data.csv", function(error, data) {
         }
 
     });
-
-    // console.log(state1Tot);
-    // console.log(state2Tot);
-    // console.log(state3Tot);
     
 });
-
-// var fillData = d3.csv("parsed_data.csv", function(error, data) {
-//     if (error) throw error;
-//     data.forEach(function(d) {
-//         d.accidental_incidents = +d.accidental_incidents;
-//         if(d.state == state1) {
-//             tData[0].value += d.accidental_incidents;
-//         }
-//         if(d.state == state2) {
-//             tData[1].value += d.accidental_incidents;
-//         }
-//         if(d.state == state3) {
-//             tData[2].value += d.accidental_incidents;
-//         }
-
-//     });
-
-//     console.log(tData);
-//     // console.log(accCount);
-// });
 
 
 var div = d3.select("body").append("div").attr("class", "toolTip");
@@ -69,9 +42,6 @@ var axisMargin = 20,
         barPadding = (height-axisMargin-margin*2)*0.6/tData.length,
         data, bar, svg, scale, xAxis, labelWidth = 0;
 
-// var axisMargin = {top: 50, right: 20, bottom: 200, left: 100},
-//     width = 960 - axisMargin.left - axisMargin.right,
-//     height = 500 - axisMargin.top - axisMargin.bottom;
 
 max = d3.max(tData, function(d) { return d.value; });
 
@@ -100,6 +70,7 @@ bar.append("text")
             return d.label;
         }).each(function() {
     labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
+    // console.log(barHeight / 2);
 });
 
 scale = d3.scaleLinear()

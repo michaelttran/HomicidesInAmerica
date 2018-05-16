@@ -19,6 +19,7 @@ var margin = {top: 50, right: 20, bottom: 200, left: 100},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+
 // Set ranges
 var x = d3.scaleBand()
           .range([0, width])
