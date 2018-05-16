@@ -64,13 +64,14 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
   x.domain(tHom.map(function(d) { return d; })); 
   y.domain([0, maxVal]);
 
-  var tooltip = d3.select("body")
+  var tooltip2 = d3.select("body")
     .data(tHom)
     .append("div")
-    .style("visibility", "hidden");
+    .attr("id", "tooltip2") //
+    .style("opacity", 0); //
 
   // Append rectangles for the bar chart
-  svg.selectAll(".bar")
+  chart1.selectAll(".bar")
       .data(tHom)
     .enter().append("rect")
       .attr("class", "bar")
@@ -85,22 +86,22 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
         return height - y(homicides[d]); }) // This should be height - value
       .attr("fill", "red")
       .on('mouseover', function(d) {
+        onMouseOver();
         var numHom = homicides[d];
         d3.select(this)
         .attr("fill", "gray");
-        tooltip.style("visibility", "visible")
-                .text(function(d) {
-                      return numHom;
-              });
+        tooltip2.text(function(d) {
+          return numHom;
+        });
       })
       .on('mouseout', function(d) {
+        onMouseOut();
         d3.select(this).attr("fill", "red");
-        return tooltip.style("visibility", "hidden");
       });
 
 
   // add the X Axis
-  svg.append("g")
+  chart1.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x))
      .selectAll("text") 
@@ -110,20 +111,34 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
         .attr("dy", ".75em");
 
   // add the Y Axis
-  svg.append("g")
+  chart1.append("g")
       .style("font-size", "14px")
       .call(d3.axisLeft(y));
 
-  svg.append("text")
+  chart1.append("text")
       .attr("x", (width / 2))
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "25px")
       .text("Homicides In Gun Categories versus All Others");
-
-
 });
 
+function onMouseOver(d) {
+  var tooltipDiv = d3.select("#tooltip2"); 
 
+  tooltipDiv.transition()        
+     .duration(200)      
+     .style("opacity", 1);   
+
+  tooltipDiv
+      .style("left", d3.event.pageX + "px") 
+     .style("cursor", "pointer")
+     .style("top", d3.event.pageY + "px") 
+      .style("color", "#000000"); 
+}
+
+function onMouseOut(d){
+    var tooltipDiv = d3.select("#tooltip2").style("opacity", 0); 
+}
 
   
