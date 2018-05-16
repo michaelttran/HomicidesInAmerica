@@ -46,7 +46,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Get data
-d3.csv("database.csv", function(error, data) {
+d3.csv("./data/parsed_data.csv.csv", function(error, data) {
   if (error) throw error;
 
   var formData = data.filter(function filterCriteria(d) {

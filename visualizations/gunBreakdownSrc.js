@@ -1,11 +1,11 @@
 var init = 0;
 
 var homicides = {
-	handgun: init,
-	shotgun: init,
-	rifle: init,
-	firearm: init,
-	other: init
+  handgun: init,
+  shotgun: init,
+  rifle: init,
+  firearm: init,
+  other: init
 };
 
 // Set graph dimensions and margins
@@ -28,41 +28,41 @@ var chart1 = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Get data
-d3.csv("parsed_data.csv", function(error, data) {
+d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   // Fills up diciontary
   data.forEach(function(d) {
-  	d.handgun_incidents = +d.handgun_incidents;
-  	homicides["handgun"] += d.handgun_incidents;
+    d.handgun_incidents = +d.handgun_incidents;
+    homicides["handgun"] += d.handgun_incidents;
 
-  	d.shotgun_incidents = +d.shotgun_incidents;
-  	homicides["shotgun"] += d.shotgun_incidents;
+    d.shotgun_incidents = +d.shotgun_incidents;
+    homicides["shotgun"] += d.shotgun_incidents;
 
-  	d.rifle_incidents = +d.rifle_incidents;
-  	homicides["rifle"] += d.rifle_incidents;
+    d.rifle_incidents = +d.rifle_incidents;
+    homicides["rifle"] += d.rifle_incidents;
 
-  	d.firearm_incidents = +d.firearm_incidents;
-  	homicides["firearm"] += d.firearm_incidents;
+    d.firearm_incidents = +d.firearm_incidents;
+    homicides["firearm"] += d.firearm_incidents;
 
-  	d.knife_incidents = +d.knife_incidents;
-  	d.other_weapon_incidents = +d.other_weapon_incidents;
+    d.knife_incidents = +d.knife_incidents;
+    d.other_weapon_incidents = +d.other_weapon_incidents;
 
-  	homicides["other"] += (d.knife_incidents + d.other_weapon_incidents);
+    homicides["other"] += (d.knife_incidents + d.other_weapon_incidents);
   })
 
   var maxVal = homicides["handgun"]; // Assigns to first value of array to make sure value exists
 
   var tHom = [];
-	for(hom in homicides) {
-		tHom.push(hom);
-		if(homicides[hom] > maxVal) {
-			maxVal = homicides[hom];
-		}
-	}
+  for(hom in homicides) {
+    tHom.push(hom);
+    if(homicides[hom] > maxVal) {
+      maxVal = homicides[hom];
+    }
+  }
 
-	x.domain(tHom.map(function(d) { return d; })); 
-	y.domain([0, maxVal]);
+  x.domain(tHom.map(function(d) { return d; })); 
+  y.domain([0, maxVal]);
 
   var tooltip = d3.select("body")
     .data(tHom)
