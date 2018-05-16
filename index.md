@@ -1,8 +1,69 @@
 ## Michael Tran and Noah King CS 360 Final Project
 
-# Outline
+> Given a dataset regarding homicides from 1980-2014, what can we find? 
 
-#Test
+<script src="//d3js.org/d3.v4.min.js"></script> 
+
+
+<style>
+
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        width: 960px;
+        height: 500px;
+        position: relative;
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+        position: center;
+    }
+
+    .toolTip {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: absolute;
+        display: none;
+        width: auto;
+        height: auto;
+        background: none repeat scroll 0 0 white;
+        border: 0 none;
+        border-radius: 8px 8px 8px 8px;
+        box-shadow: -3px 3px 15px #888888;
+        color: black;
+        font: 12px sans-serif;
+        padding: 5px;
+        text-align: center;
+    }
+
+    text {
+        font: 15px sans-serif;
+        color: white;
+    }
+    text.value {
+        font-size: 120%;
+        fill: white;
+    }
+
+    .axisHorizontal path{
+        fill: none;
+    }
+
+    .axisHorizontal .tick line {
+        stroke-width: 1;
+        stroke: rgba(0, 0, 0, 0.2);
+    }
+
+    .bar {
+        fill: red;
+        fill-opacity: .9;
+    }
+
+</style>
+  
+<script src="horiBarSrc.js"></script>
+
+
 
 
 
