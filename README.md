@@ -1,6 +1,5 @@
 # cs360final
 
-
 ## Report Page for "Death by Numbers"
 #### A visualization of homicide reports from 1980-2014 received from [Kaggle](https://www.kaggle.com/murderaccountability/homicide-reports).
 
