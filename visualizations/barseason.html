@@ -41,6 +41,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Get data
+// d3.csv("./visualizations/parsed_data.csv", function(error, data) {
 d3.csv("parsed_data.csv", function(error, data) {
   if (error) throw error;
 

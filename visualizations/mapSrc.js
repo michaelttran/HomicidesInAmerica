@@ -28,7 +28,7 @@ var svg = d3.select("body").append("svg")
 
 
 // Get data
-d3.csv("parsed_data.csv", function(error, data) {
+d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   // Formats data
@@ -46,7 +46,7 @@ d3.csv("parsed_data.csv", function(error, data) {
               d3.max(weaponDict, function(d) { return d.total_incidents; })]);
 
   //Load in GeoJSON data
-    d3.json("us_states.json", function(json) {
+    d3.json("./data/us_states.json", function(json) {
 
       for (var i = 0 ; i < weaponDict.length ; i++) {
         //Grab state name
