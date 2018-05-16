@@ -64,7 +64,9 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
   var tooltip = d3.select("body")
     .data(tSeason)
     .append("div")
-    .style("visibility", "hidden");
+    .attr("id", "tooltip") //
+    .style("opacity", 0); //
+    // .style("visibility", "hidden");
 
   // Append rectangles for the bar chart
   chart3.selectAll(".bar")
@@ -82,17 +84,17 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
         return height - y(seasonSum[d]); }) // This should be height - value
       .attr("fill", "red")
       .on('mouseover', function(d) {
+        onMouseOver();
         var numHom = seasonSum[d];
         d3.select(this)
         .attr("fill", "gray");
-        tooltip.style("visibility", "visible")
-                .text(function(d) {
+        tooltip.text(function(d) {
                       return numHom;
               });
       })
       .on('mouseout', function(d) {
+        onMouseOut();
         d3.select(this).attr("fill", "red");
-        return tooltip.style("visibility", "hidden");
       });
 
 
@@ -119,3 +121,21 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
       .text("Number of Homicides per Season");
 
 });
+
+function onMouseOver(d) {
+  var tooltipDiv = d3.select("#tooltip"); 
+
+  tooltipDiv.transition()        
+     .duration(200)      
+     .style("opacity", 1);   
+
+  tooltipDiv
+      .style("left", d3.event.pageX + "px") 
+     .style("cursor", "pointer")
+     .style("top", d3.event.pageY + "px") 
+      .style("color", "#000000"); 
+}
+
+function onMouseOut(d){
+    var tooltipDiv = d3.select("#tooltip").style("opacity", 0); 
+}
