@@ -9,4 +9,4 @@ Visualizations created using [D3](https://d3js.org/) and [cloudflare](https://cd
 
 [Final Presentation Slides](https://docs.google.com/presentation/d/1jdsF2GmWFvpkvDqsdgFKi1RkLgF-CQbA2HPjrzwJhYc/edit?usp=sharing)
 
-[Project Website](michaelttran.github.io/HomicidesInAmerica)
+[Project Website](https://michaelttran.github.io/HomicidesInAmerica/)
