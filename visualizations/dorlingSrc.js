@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-
-path {
-  stroke: #000;
-  stroke-width: 1px;
-}
-
-</style>
-<body>
-<svg width="960", height="600"></svg>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-<script>
-
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
@@ -38,7 +21,7 @@ var rScale = d3.scaleLinear()
 
 color.domain([150, 20]); // Inverted radius range for the color domain
 
-d3.csv("parsed_data.csv", function(error, data) {
+d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   // Formats data
@@ -201,6 +184,3 @@ function midpoint(a, b) {
 function pathString(d) {
   return (d.rings || d).map(ring => "M" + ring.join("L") + "Z").join(" ");
 }
-
-
-</script>

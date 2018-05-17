@@ -1,22 +1,3 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-
-text {
-  font: 10px sans-serif;
-  text-anchor: middle;
-}
-
-.node--hover circle {
-  stroke: #000;
-  stroke-width: 1.2px;
-}
-
-</style>
-<svg width="960" height="960"><g transform="translate(1,1)"></g></svg>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
-
 var homicides = [{id: "weapon", value: ""},
                   {id: "weapon.gun", value: ""},
                   {id: "weapon.gun.handgun" , value: 0},
@@ -43,7 +24,7 @@ var pack = d3.pack()
     .size([width - 2, height - 2])
     .padding(3);
 
-d3.csv("parsed_data.csv", function(error, data) {
+d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   data.forEach(function(d) {
@@ -118,5 +99,3 @@ function hovered(hover) {
     d3.selectAll(d.ancestors().map(function(d) { return d.node; })).classed("node--hover", hover);
   };
 }
-
-</script>

@@ -164,6 +164,16 @@
       fill: white;
   }
 
+  .textH {
+      font: 15px sans-serif;
+      color: black;
+  }
+
+  path {
+  stroke: #000;
+  stroke-width: 1px;
+  }
+
   .axisHorizontal path{
       fill: none;
   }
@@ -173,11 +183,15 @@
       stroke: rgba(0, 0, 0, 0.2);
   }
 
-/*  .bar {
-      fill: red;
-      fill-opacity: .9;
-  }*/
+  .node--hover circle {
+    stroke: #000;
+    stroke-width: 1.2px;
+  }
 
+  .line { fill: none;
+          stroke: red;
+          stroke-width: 3px;
+  }
 
 
 </style>

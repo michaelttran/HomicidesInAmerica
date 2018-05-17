@@ -11,15 +11,15 @@ var targetState2 = "Minnesota";
 var parseTime = d3.timeParse("%Y%B");
 
 // Set ranges
-var x = d3.scaleTime()
+var xTim = d3.scaleTime()
           .range([0, width])
-var y = d3.scaleLinear()
+var yVal = d3.scaleLinear()
           .range([height, 0]);
 
 // Define line
 var line = d3.line()
     .x(function(d) {
-      return x(d.time);
+      return xTim(d.time);
     })
     .y(function(d) {
       return y(d.handgun_incidents);
@@ -35,7 +35,7 @@ var svg = d3.select("body").append("svg")
 
 
 // Get data
-d3.csv("parsed_data.csv", function(error, data) {
+d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
   // Filters the data to a manageable chunk
@@ -59,7 +59,7 @@ d3.csv("parsed_data.csv", function(error, data) {
   })
 	
   // Scale the range of the data in the domains
-  x.domain(d3.extent(newData, function(d) {
+  xTim.domain(d3.extent(newData, function(d) {
     return d.time; 
   }));
   y.domain([0, d3.max(newData, function(d) {
@@ -72,8 +72,8 @@ d3.csv("parsed_data.csv", function(error, data) {
     .attr("class", "line")
     .attr("d", line);
 
-  svg.append("text")
-    .attr("x", x(newData[newData.length - 1].time))
+  svg.append("textH")
+    .attr("x", xTim(newData[newData.length - 1].time))
     .attr("y", y(newData[newData.length - 1].handgun_incidents) + 8)
     .attr("text-anchor", "end")
     .text(targetState);
@@ -84,8 +84,9 @@ d3.csv("parsed_data.csv", function(error, data) {
     .attr("class", "line")
     .attr("d", line);
 
-  svg.append("text")
-    .attr("x", x(newData2[newData2.length - 1].time))
+
+  svg.append("textH")
+    .attr("x", xTim(newData2[newData2.length - 1].time))
     .attr("y", y(newData2[newData2.length - 1].handgun_incidents) - 5)
     .attr("text-anchor", "end")
     .text(targetState2);
@@ -93,7 +94,7 @@ d3.csv("parsed_data.csv", function(error, data) {
   // X axis
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(xTim));
 
   // Y Axis
   svg.append("g")
@@ -105,6 +106,6 @@ d3.csv("parsed_data.csv", function(error, data) {
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "20px")
-      .text("Number of Homicides by Handgun in " + targetState +  " and " + targetState2 + " Over Time");
+      .text("Number of Homicides by Handgun in " + targetState +  " and " + targetState2 + " from 1980-2014");
 
 });
