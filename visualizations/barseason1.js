@@ -24,7 +24,7 @@ var margin = {top: 50, right: 20, bottom: 200, left: 100},
 var x = d3.scaleBand()
           .range([0, width])
           .padding(0.1);
-var y = d3.scaleLinear()
+var yLin = d3.scaleLinear()
           .range([height, 0]);  
           
 // Appends an svg to the body and a group which is moved to the top left margin
@@ -60,14 +60,13 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
   }
 
   x.domain(tSeason.map(function(d) { return d; })); 
-  y.domain([0, maxVal]);
+  yLin.domain([0, maxVal]);
 
   var tooltip = d3.select("body")
     .data(tSeason)
     .append("div")
     .attr("id", "tooltip") //
     .style("opacity", 0); //
-    // .style("visibility", "hidden");
 
   // Append rectangles for the bar chart
   chart3.selectAll(".bar")
@@ -79,10 +78,10 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
       .attr("width", x.bandwidth())
       .attr("y", function(d) {  // Should return values
         
-        return y(seasonSum[d]); })
+        return yLin(seasonSum[d]); })
       .attr("height", function(d) { 
       
-        return height - y(seasonSum[d]); }) // This should be height - value
+        return height - yLin(seasonSum[d]); }) // This should be height - value
       .attr("fill", "red")
       .on('mouseover', function(d) {
         onMouseOver();
