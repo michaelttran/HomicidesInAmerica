@@ -9,7 +9,7 @@ path {
 
 </style>
 <body>
-<svg width="960", height="600"></svg>
+<svg width="1000", height="900"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -137,6 +137,13 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
           .attr("fill", "#ccc")
           .on("end", (d, i) => i || simulate());
 
+      svg.append("text")
+      .attr("x", "500")
+      .attr("y", "700")
+      .attr("text-anchor", "middle")
+      .style("font-size", "25px")
+      .text("Each State's Size is Represented by its Total Homicides");
+
     }
 
   });
@@ -204,3 +211,4 @@ function pathString(d) {
 
 
 </script>
+<a href='index3.html' id='mylink'>Next Page</a>
