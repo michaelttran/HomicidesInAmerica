@@ -57,7 +57,7 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
     d.time = parseTime(d.year + d.month);
     d.handgun_incidents = +d.handgun_incidents;
   })
-	
+  
   // Scale the range of the data in the domains
   xTim.domain(d3.extent(newData, function(d) {
     return d.time; 
