@@ -1,4 +1,4 @@
-var homicides = [{id: "weapon", value: ""},
+var weapons_dict = [{id: "weapon", value: ""},
                   {id: "weapon.gun", value: ""},
                   {id: "weapon.gun.handgun" , value: 0},
                   {id: "weapon.gun.shotgun", value: 0},
@@ -8,9 +8,15 @@ var homicides = [{id: "weapon", value: ""},
                   {id: "weapon.random.knife", value: 0},
                   {id: "weapon.random.other", value: 0}];
 
-var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
+var width = 960,
+    height = 960;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", 
+          "translate(1,1)");    
 
 var format = d3.format(",d");
 
@@ -22,32 +28,33 @@ var stratify = d3.stratify()
 
 var pack = d3.pack()
     .size([width - 2, height - 2])
-    .padding(3);
+    .padding(3); 
 
 d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
+  console.log(weapons_dict);
   data.forEach(function(d) {
     d.handgun_incidents = +d.handgun_incidents;
-    homicides[2]["value"] += d.handgun_incidents;
+    weapons_dict[2]["value"] += d.handgun_incidents;
 
     d.shotgun_incidents = +d.shotgun_incidents;
-    homicides[3]["value"] += d.shotgun_incidents;
+    weapons_dict[3]["value"] += d.shotgun_incidents;
 
     d.rifle_incidents = +d.rifle_incidents;
-    homicides[4]["value"] += d.rifle_incidents;
+    weapons_dict[4]["value"] += d.rifle_incidents;
 
     d.firearm_incidents = +d.firearm_incidents;
-    homicides[5]["value"] += d.firearm_incidents;
+    weapons_dict[5]["value"] += d.firearm_incidents;
 
     d.knife_incidents = +d.knife_incidents;
-    homicides[7]["value"] += d.knife_incidents;
+    weapons_dict[7]["value"] += d.knife_incidents;
 
     d.other_weapon_incidents = +d.other_weapon_incidents;
-    homicides[8]["value"] += d.other_weapon_incidents;
+    weapons_dict[8]["value"] += d.other_weapon_incidents;
   });
 
-  var root = stratify(homicides)
+  var root = stratify(weapons_dict)
       .sum(function(d) { return d.value; })
       .sort(function(a, b) { return b.value - a.value; });
 

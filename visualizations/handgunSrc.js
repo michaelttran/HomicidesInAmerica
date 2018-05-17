@@ -22,7 +22,7 @@ var line = d3.line()
       return xTim(d.time);
     })
     .y(function(d) {
-      return y(d.handgun_incidents);
+      return yVal(d.handgun_incidents);
     });
           
 // Appends an svg to the body and a group which is moved to the top left margin
@@ -62,7 +62,7 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
   xTim.domain(d3.extent(newData, function(d) {
     return d.time; 
   }));
-  y.domain([0, d3.max(newData, function(d) {
+  yVal.domain([0, d3.max(newData, function(d) {
     return d.handgun_incidents; 
   })]);
 
@@ -74,7 +74,7 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
 
   svg.append("textH")
     .attr("x", xTim(newData[newData.length - 1].time))
-    .attr("y", y(newData[newData.length - 1].handgun_incidents) + 8)
+    .attr("y", yVal(newData[newData.length - 1].handgun_incidents) + 8)
     .attr("text-anchor", "end")
     .text(targetState);
 
@@ -87,7 +87,7 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
 
   svg.append("textH")
     .attr("x", xTim(newData2[newData2.length - 1].time))
-    .attr("y", y(newData2[newData2.length - 1].handgun_incidents) - 5)
+    .attr("y", yVal(newData2[newData2.length - 1].handgun_incidents) - 5)
     .attr("text-anchor", "end")
     .text(targetState2);
 
@@ -98,7 +98,7 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
 
   // Y Axis
   svg.append("g")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(yVal));
 
   // Make a title
   svg.append("text")

@@ -1,9 +1,23 @@
-var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height"),
-    radius = d3.scaleSqrt().range([0, 45]).clamp(true),
-    color = d3.scaleLinear();
+// var svg = d3.select("svg"),
+//     width = +svg.attr("width"),
+//     height = +svg.attr("height"),
+//     radius = d3.scaleSqrt().range([0, 45]).clamp(true),
+//     color = d3.scaleLinear();
+// Set graph dimensions and margins
+var margin = {top: 50, right: 20, bottom: 110, left: 0},
+    width = 1200 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
 
+// Appends an svg to the body and a group which is moved to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+var radius = d3.scaleSqrt().range([0, 45]).clamp(true),
+    color = d3.scaleLinear();      
 
 
 var stateLookup = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut", "District of Columbia", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "Nebraska", "North Carolina", "North Dakota", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhodes Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"];
@@ -37,7 +51,7 @@ d3.csv("./data/parsed_data.csv", function(error, data) {
 
   rScale.domain([0, d3.max(weaponDict, function(d) { return d.total_incidents; })]);
 
-  d3.json("us.json", function(err, us) {
+  d3.json("./data/us_dorling.json", function(err, us) {
     var neighbors = topojson.neighbors(us.objects.states.geometries),
         nodes = topojson.feature(us, us.objects.states).features;
 
