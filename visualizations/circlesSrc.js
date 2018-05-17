@@ -33,7 +33,6 @@ var pack = d3.pack()
 d3.csv("./data/parsed_data.csv", function(error, data) {
   if (error) throw error;
 
-  console.log(weapons_dict);
   data.forEach(function(d) {
     d.handgun_incidents = +d.handgun_incidents;
     weapons_dict[2]["value"] += d.handgun_incidents;
