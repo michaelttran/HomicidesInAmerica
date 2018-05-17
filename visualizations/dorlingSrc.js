@@ -8,10 +8,13 @@ var margin = {top: 50, right: 20, bottom: 110, left: 0},
     width = 1200 - margin.left - margin.right,
     height = 700 - margin.top - margin.bottom;
 
+
 // Appends an svg to the body and a group which is moved to the top left margin
 var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    // .attr("width", width + margin.left + margin.right)
+    // .attr("height", height + margin.top + margin.bottom)
+    .attr("width", 960)
+    .attr("height", 1200)
   .append("g")
     .attr("transform", 
           "translate(" + margin.left + "," + margin.top + ")");

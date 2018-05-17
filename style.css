@@ -1,4 +1,6 @@
 <style> 
+
+
   .label {stroke: darkgrey;
           fill : darkgrey;
           text-anchor : middle;
@@ -169,10 +171,10 @@
       color: black;
   }
 
-  path {
+/*  path {
   stroke: #000;
   stroke-width: 1px;
-  }
+  }*/
 
   .axisHorizontal path{
       fill: none;
@@ -183,10 +185,10 @@
       stroke: rgba(0, 0, 0, 0.2);
   }
 
-  .node--hover circle {
-    stroke: #000;
-    stroke-width: 1.2px;
-  }
+.node--hover circle {
+  stroke: #000;
+  stroke-width: 1.2px;
+}
 
   .line { fill: none;
           stroke: red;
